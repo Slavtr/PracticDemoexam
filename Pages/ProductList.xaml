@@ -30,9 +30,9 @@
         <StackPanel Orientation="Horizontal" Grid.Column="2">
             <Label Content="Фильтр"/>
             <ComboBox Width="100" ItemsSource="{Binding Path=ProductListModule.ProductTypes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            <Button Content="Х" Width="20"/>
+            <Button Content="Х" Width="20" Command="{Binding Path=ProductListModule.ClearFilterCommand}"/>
         </StackPanel>
-        <ListBox Grid.Row="1" Grid.ColumnSpan="3" DataContext="{Binding Path=ProductListModule.Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
+        <ListBox Grid.Row="1" Grid.ColumnSpan="3" DataContext="{Binding Path=ProductListModule.Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" x:Name="lbProducts">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -40,9 +40,9 @@
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Path=Product.ProductType.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
-                                <Label Content="|"/>
+                                <TextBlock Text="|" Margin="5, 0, 5, 0"/>
                                 <TextBlock Text="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
-                                <TextBlock Text="{Binding Path=Product.MinCostForAgent, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                                <TextBlock Text="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Margin="20, 0, 0, 0"/>
                             </StackPanel>
                         </StackPanel>
                     </StackPanel>

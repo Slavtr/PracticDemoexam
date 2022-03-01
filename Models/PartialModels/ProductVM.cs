@@ -10,6 +10,11 @@ namespace PracticDemoexam.Models.PartialModels
     {
         public DataModel.Product Product { get; set; }
 
+        public decimal Cost
+        {
+            get { return Product.MinCostForAgent; }
+        }
+
         public ProductVM(DataModel.Product product = null)
         {
             if (product != null)

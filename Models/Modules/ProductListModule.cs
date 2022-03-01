@@ -72,7 +72,7 @@ namespace PracticDemoexam.Models.Modules
         public ObservableCollection<ProductVM> Products { get; set; } = new ObservableCollection<ProductVM>();
         private readonly ObservableCollection<ProductVM> UnchangedProducts = new ObservableCollection<ProductVM>();
 
-        public CommandBindingCollection CommandBindingCollection { get; } = new CommandBindingCollection();
+        public CommandBindingCollection CommandBindingCollection { get; set; } = new CommandBindingCollection();
 
         #region SearchSortFilter
 
@@ -92,7 +92,7 @@ namespace PracticDemoexam.Models.Modules
                 }
                 else
                 {
-                    var productVMs = Products.Where(x => x.Product.Title == value);
+                    var productVMs = Products.Where(x => x.Product.Title.Contains(value)).ToList();
                     Products.Clear();
                     foreach (ProductVM pvm in productVMs)
                     {
@@ -136,7 +136,7 @@ namespace PracticDemoexam.Models.Modules
                         case "Наименование":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.Title);
+                                var productVMs = Products.OrderByDescending(x => x.Product.Title).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -145,7 +145,7 @@ namespace PracticDemoexam.Models.Modules
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.Title);
+                                var productVMs = Products.OrderBy(x => x.Product.Title).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -156,7 +156,7 @@ namespace PracticDemoexam.Models.Modules
                         case "Номер цеха":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.ProductionWorkshopNumber);
+                                var productVMs = Products.OrderByDescending(x => x.Product.ProductionWorkshopNumber).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -165,7 +165,7 @@ namespace PracticDemoexam.Models.Modules
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.ProductionWorkshopNumber);
+                                var productVMs = Products.OrderBy(x => x.Product.ProductionWorkshopNumber).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -176,7 +176,7 @@ namespace PracticDemoexam.Models.Modules
                         case "Мин. стоимость":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.MinCostForAgent);
+                                var productVMs = Products.OrderByDescending(x => x.Product.MinCostForAgent).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -185,7 +185,7 @@ namespace PracticDemoexam.Models.Modules
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.MinCostForAgent);
+                                var productVMs = Products.OrderBy(x => x.Product.MinCostForAgent).ToList();
                                 Products.Clear();
                                 foreach (ProductVM pvm in productVMs)
                                 {
@@ -211,7 +211,7 @@ namespace PracticDemoexam.Models.Modules
                 if (value != null)
                 {
                     _currType = value;
-                    var productVMs = Products.Where(x => x.Product.ProductTypeID == _currType.ID);
+                    var productVMs = UnchangedProducts.Where(x => x.Product.ProductTypeID == _currType.ID).ToList();
                     Products.Clear();
                     foreach(ProductVM pvm in productVMs)
                     {
