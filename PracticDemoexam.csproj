@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{5B39E4A0-446A-460F-A4C5-B41D6F93389A}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>PracticDemoexam</RootNamespace>
+    <AssemblyName>PracticDemoexam</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Pages\ProductList.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Models\DataModel\Agent.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\AgentPriorityHistory.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\AgentType.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\DataModel.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataModel.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\DataModel.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\DataModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\Material.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\MaterialCountHistory.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\MaterialType.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\Product.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\ProductCostHistory.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\ProductMaterial.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\ProductSale.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\ProductType.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\Shop.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\DataModel\Supplier.cs">
+      <DependentUpon>DataModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Modules\ProductListModule.cs" />
+    <Compile Include="Models\PartialModels\ProductVM.cs" />
+    <Compile Include="Models\ViewModel.cs" />
+    <Compile Include="Pages\ProductList.xaml.cs">
+      <DependentUpon>ProductList.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EntityDeploy Include="Models\DataModel\DataModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>DataModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Models\DataModel\DataModel.edmx.diagram">
+      <DependentUpon>DataModel.edmx</DependentUpon>
+    </None>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Models\DataModel\DataModel.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>DataModel.Context.cs</LastGenOutput>
+      <DependentUpon>DataModel.edmx</DependentUpon>
+    </Content>
+    <Content Include="Models\DataModel\DataModel.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>DataModel.edmx</DependentUpon>
+      <LastGenOutput>DataModel.cs</LastGenOutput>
+    </Content>
+    <Resource Include="Resources\products\5fb128cc69235.jpg" />
+    <Resource Include="Resources\products\5fb128cc719a6.jpg" />
+    <Resource Include="Resources\products\5fb128cc753e3.jpg" />
+    <Resource Include="Resources\products\5fb128cc7941f.jpg" />
+    <Resource Include="Resources\products\5fb128cc7d798.jpg" />
+    <Resource Include="Resources\products\5fb128cc80a10.jpg" />
+    <Resource Include="Resources\products\5fb128cc84474.jpg" />
+    <Resource Include="Resources\products\5fb128cc87b90.jpg" />
+    <Resource Include="Resources\products\5fb128cc8b750.jpg" />
+    <Resource Include="Resources\products\5fb128cc8f4dd.jpg" />
+    <Resource Include="Resources\products\5fb128cc9414b.jpg" />
+    <Resource Include="Resources\products\5fb128cc97ff4.jpg" />
+    <Resource Include="Resources\products\5fb128cc9bd36.jpg" />
+    <Resource Include="Resources\products\5fb128cc9f069.jpg" />
+    <Resource Include="Resources\products\5fb128cca31d9.jpg" />
+    <Resource Include="Resources\products\5fb128cca6910.jpg" />
+    <Resource Include="Resources\products\5fb128cca9d9b.jpg" />
+    <Resource Include="Resources\products\5fb128ccae21a.jpg" />
+    <Resource Include="Resources\products\5fb128ccb1958.jpg" />
+    <Resource Include="Resources\products\5fb128ccb4e8c.jpg" />
+    <Resource Include="Resources\products\5fb128ccb97a0.jpg" />
+    <Resource Include="Resources\products\5fb128ccbd227.jpg" />
+    <Resource Include="Resources\products\5fb128ccc1592.jpg" />
+    <Resource Include="Resources\products\5fb128ccc4a86.jpg" />
+    <Resource Include="Resources\products\5fb128ccc9a9e.jpg" />
+    <Resource Include="Resources\products\5fb128cccdbee.jpg" />
+    <Resource Include="Resources\products\5fb128ccd133c.jpg" />
+    <Resource Include="Resources\products\5fb128ccd5dc2.jpg" />
+    <Resource Include="Resources\products\5fb128ccd8ff6.jpg" />
+    <Resource Include="Resources\products\5fb128ccdca1e.jpg" />
+    <Resource Include="Resources\products\5fb128cce0042.jpg" />
+    <Resource Include="Resources\products\5fb128cce39fa.jpg" />
+    <Resource Include="Resources\products\5fb128cce7971.jpg" />
+    <Resource Include="Resources\products\5fb128cceae7c.jpg" />
+    <Resource Include="Resources\products\5fb128ccef256.jpg" />
+    <Resource Include="Resources\products\5fb128ccf3dd2.jpg" />
+    <Resource Include="Resources\products\5fb128cd0544b.jpg" />
+    <Resource Include="Resources\products\5fb128cd08e3f.jpg" />
+    <Resource Include="Resources\products\5fb128cd0d0b1.jpg" />
+    <Resource Include="Resources\products\5fb128cd10ec2.jpg" />
+    <Resource Include="Resources\products\5fb128cd157f9.jpg" />
+    <Resource Include="Resources\products\5fb128cd19baa.jpg" />
+    <Resource Include="Resources\products\5fb128cd1e2b9.jpg" />
+    <Resource Include="Resources\products\5fb128cd2215f.jpg" />
+    <Resource Include="Resources\products\5fb128cd268bf.jpg" />
+    <Resource Include="Resources\products\5fb128cd2ab69.jpg" />
+    <Resource Include="Resources\products\5fb128cd2ef7a.jpg" />
+    <Resource Include="Resources\products\5fb128cd331c4.jpg" />
+    <Resource Include="Resources\products\5fb128cd3674d.jpg" />
+    <Resource Include="Resources\products\5fb128cd3af5c.jpg" />
+    <Resource Include="Resources\products\5fb128cd3e7e4.jpg" />
+    <Resource Include="Resources\products\5fb128cd41ece.jpg" />
+    <Resource Include="Resources\products\5fb128cd4672c.jpg" />
+    <Resource Include="Resources\products\5fb128cd4c99d.jpg" />
+    <Resource Include="Resources\products\5fb128cd50a70.jpg" />
+    <Resource Include="Resources\products\5fb128cd5433e.jpg" />
+    <Resource Include="Resources\products\5fb128cd5838d.jpg" />
+    <Resource Include="Resources\products\5fb128cd5bb7d.jpg" />
+    <Resource Include="Resources\products\5fb128cd5ff78.jpg" />
+    <Resource Include="Resources\products\5fb128cd63666.jpg" />
+    <Resource Include="Resources\products\5fb128cd66df6.jpg" />
+    <Resource Include="Resources\products\5fb128cd6a2b6.jpg" />
+    <Resource Include="Resources\products\5fb128cd6e4ee.jpg" />
+    <Resource Include="Resources\products\5fb128cd71db3.jpg" />
+    <Resource Include="Resources\products\5fb128cd7518c.jpg" />
+    <Resource Include="Resources\products\5fb128cd78fce.jpg" />
+    <Resource Include="Resources\products\5fb128cd7d2cd.jpg" />
+    <Resource Include="Resources\products\5fb128cd80a06.jpg" />
+    <Resource Include="Resources\products\5fb128cd8417e.jpg" />
+    <Resource Include="Resources\products\5fb128cd8818d.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
+</Project>
