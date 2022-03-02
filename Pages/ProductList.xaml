@@ -14,6 +14,7 @@
                     <Setter Property="Background" Value="#4CF08080"/>
                 </DataTrigger>
             </Style.Triggers>
+            <Setter Property="IsSelected" Value="{Binding Path=IsSelected, Mode=TwoWay}"/>
         </Style>
     </Page.Resources>
     <Grid>

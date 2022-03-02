@@ -325,7 +325,14 @@ namespace PracticDemoexam.Models.Modules
 
         #region ContextMenu
 
-        public ObservableCollection<ProductVM> SelectedItems { get; set; } = new ObservableCollection<ProductVM>();
+        private ObservableCollection<ProductVM> SelectedItems
+        {
+            get
+            {
+                ObservableCollection<ProductVM> ret = new ObservableCollection<ProductVM>(Products.Where(x => x.IsSelected == true));
+                return ret;
+            }
+        }
 
         public RoutedCommand ItemRedactCommand { get; private set; }
         public CommandBinding ItemRedactCommandBinding { get; private set; }
@@ -351,11 +358,11 @@ namespace PracticDemoexam.Models.Modules
 
         private void ChangeManyCosts(object sender, ExecutedRoutedEventArgs e)
         {
-
+             
         }
         private void CanExecuteChangeManyCosts(object sender, CanExecuteRoutedEventArgs e)
         {
-            if (SelectedItems.Count != 1)
+            if (SelectedItems.Count > 1)
             {
                 e.CanExecute = true;
             }

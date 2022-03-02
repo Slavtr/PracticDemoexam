@@ -66,6 +66,8 @@ namespace PracticDemoexam.Models.PartialModels
             }
         }
 
+        public bool IsSelected { get; set; }
+
         public ProductVM(DataModel.Product product = null)
         {
             if (product != null)
