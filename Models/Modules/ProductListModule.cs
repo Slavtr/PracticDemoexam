@@ -57,7 +57,16 @@ namespace PracticDemoexam.Models.Modules
         {
             ClearFilterCommand = new RoutedCommand("ClearFilter", GetType());
             ClearFilterCommandBinding = new CommandBinding(ClearFilterCommand, ClearFilter, CanExecuteClearFilter);
+            PageLeftCommand = new RoutedCommand("PageLeft", GetType());
+            PageLeftCommandBinding = new CommandBinding(PageLeftCommand, PageScrollMethod, CanExecutePageScroll);
+            PageRightCommand = new RoutedCommand("PageRight", GetType());
+            PageRightCommandBinding = new CommandBinding(PageRightCommand, PageScrollMethod, CanExecutePageScroll);
+
+
+
             CommandBindingCollection.Add(ClearFilterCommandBinding);
+            CommandBindingCollection.Add(PageLeftCommandBinding);
+            CommandBindingCollection.Add(PageRightCommandBinding);
             return true;
         }
 
@@ -241,12 +250,10 @@ namespace PracticDemoexam.Models.Modules
                     }
                 }
                 Pages.Clear();
-                Pages.Add("<");
                 for(int i = 1; i < _countPages; i++)
                 {
                     Pages.Add(i.ToString());
                 }
-                Pages.Add(">");
 
                 _currentPage = PoginationPages.First().Key;
                 OnPropertyChanged("Products");
@@ -266,32 +273,97 @@ namespace PracticDemoexam.Models.Modules
             }
             set
             {
-                switch (value)
-                {
-                    case "<":
-                        _currentPage -= 1;
-                        if(_currentPage < Convert.ToInt32(Pages[1]))
-                        {
-                            _currentPage = Convert.ToInt32(Pages[Pages.Count - 2]);
-                        }
-                        break;
-                    case ">":
-                        _currentPage += 1;
-                        if(_currentPage > Convert.ToInt32(Pages[Pages.Count - 2]))
-                        {
-                            _currentPage = Convert.ToInt32(Pages[1]);
-                        }
-                        break;
-                    default:
-                        _currentPage = Convert.ToInt32(value);
-                        break;
-                }
+                _currentPage = Convert.ToInt32(value);
                 OnPropertyChanged("Products");
                 OnPropertyChanged("CurrentPage");
             }
         }
 
         public List<string> Pages { get; set; } = new List<string>();
+
+        public RoutedCommand PageRightCommand { get; private set; }
+        public CommandBinding PageRightCommandBinding { get; private set; }
+
+        public RoutedCommand PageLeftCommand { get; private set; }
+        public CommandBinding PageLeftCommandBinding { get; private set; }
+
+        private void PageScrollMethod(object sender, ExecutedRoutedEventArgs e)
+        {
+            switch ((e.Command as RoutedCommand).Name)
+            {
+                case "PageLeft":
+                    _currentPage -= 1;
+                    if (_currentPage < Convert.ToInt32(Pages[0]))
+                    {
+                        _currentPage = Convert.ToInt32(Pages[Pages.Count - 1]);
+                    }
+                    break;
+                case "PageRight":
+                    _currentPage += 1;
+                    if (_currentPage > Convert.ToInt32(Pages[Pages.Count - 1]))
+                    {
+                        _currentPage = Convert.ToInt32(Pages[0]);
+                    }
+                    break;
+            }
+            OnPropertyChanged("Products");
+            OnPropertyChanged("CurrentPage");
+        }
+        private void CanExecutePageScroll(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if(Pages.Count > 1)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+
+        #endregion
+
+        #region ContextMenu
+
+        public ObservableCollection<ProductVM> SelectedItems { get; set; } = new ObservableCollection<ProductVM>();
+
+        public RoutedCommand ItemRedactCommand { get; private set; }
+        public CommandBinding ItemRedactCommandBinding { get; private set; }
+
+        private void RedactItem(object sender, ExecutedRoutedEventArgs e)
+        {
+            
+        }
+        private void CanExecuteRedactItem(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if(SelectedItems.Count == 1)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+
+        public RoutedCommand ChangeManyCostsCommand { get; private set; }
+        public CommandBinding ChangeManyCostsCommandBinding { get; private set; }
+
+        private void ChangeManyCosts(object sender, ExecutedRoutedEventArgs e)
+        {
+
+        }
+        private void CanExecuteChangeManyCosts(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (SelectedItems.Count != 1)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
 
         #endregion
 

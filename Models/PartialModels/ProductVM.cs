@@ -50,6 +50,22 @@ namespace PracticDemoexam.Models.PartialModels
             }
         }
 
+        public bool SoldInLastMonth
+        {
+            get
+            {
+                var lastSale = Product.ProductSale.FirstOrDefault(x => (DateTime.Now - x.SaleDate).TotalDays <= 30);
+                if(lastSale == null)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+        }
+
         public ProductVM(DataModel.Product product = null)
         {
             if (product != null)

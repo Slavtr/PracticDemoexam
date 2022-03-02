@@ -26,6 +26,7 @@ namespace PracticDemoexam.Pages
             this.DataContext = MainWindow.model;
             MainWindow.model.ProductListModule.CommandBindingCollection = CommandBindings;
             MainWindow.model.ProductListModule.LoadCommands();
+            MainWindow.model.ProductListModule.SelectedItems = lbProducts.SelectedItems;
         }
     }
 }

@@ -7,7 +7,15 @@
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProductList">
-
+    <Page.Resources>
+        <Style x:Key="StyleForMainLB" TargetType="{x:Type ListBoxItem}">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Path=SoldInLastMonth}" Value="true">
+                    <Setter Property="Background" Value="#4CF08080"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Page.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="219*"/>
@@ -32,12 +40,16 @@
             <ComboBox MinWidth="100" ItemsSource="{Binding Path=ProductListModule.ProductTypes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Button Content="Х" Width="20" Command="{Binding Path=ProductListModule.ClearFilterCommand}"/>
         </StackPanel>
-        <ListBox Grid.Row="1" Grid.ColumnSpan="3" DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" x:Name="lbProducts">
+        <ListBox Grid.Row="1" Grid.ColumnSpan="3" 
+                 DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                 ItemsSource="{Binding Path=Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" x:Name="lbProducts" 
+                 ItemContainerStyle="{StaticResource StyleForMainLB}"
+                 SelectionMode="Multiple">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <StackPanel Orientation="Horizontal" x:Name="Item">
                         <Image Source="{Binding Path=MainImage, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" MaxWidth="250" MaxHeight="250"/>
-                        <StackPanel Orientation="Vertical">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Path=Product.ProductType.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                 <TextBlock Text="|" Margin="5, 0, 5, 0"/>
@@ -45,18 +57,28 @@
                                 <TextBlock Text="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Margin="20, 0, 0, 0"/>
                             </StackPanel>
                             <TextBlock Text="{Binding Path=Product.ArticleNumber, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
-                            <TextBlock Text="{Binding Path=Materials, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" MaxWidth="400" TextWrapping="WrapWithOverflow"/>
+                            <TextBlock Text="{Binding Path=Materials, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" MaxWidth="400" TextWrapping="Wrap" HorizontalAlignment="Left"/>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Редактировать" Command=""/>
+                    <MenuItem Header="Изменить цену на ..." Command=""/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
-        <ListBox Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Pages, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=CurrentPage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
-            <ListBox.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal"/>
-                </ItemsPanelTemplate>
-            </ListBox.ItemsPanel>
-        </ListBox>
+        <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Button Content="&lt;" Command="{Binding Path=ProductListModule.PageLeftCommand}"/>
+            <ListBox  DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Pages, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=CurrentPage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                       <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+            </ListBox>
+            <Button Content=">" Command="{Binding Path=ProductListModule.PageRightCommand}"/>
+        </StackPanel>
     </Grid>
 </Page>
