@@ -24,8 +24,8 @@ namespace PracticDemoexam.Pages
         {
             InitializeComponent();
             this.DataContext = MainWindow.model;
-            lbProducts.ItemsSource = MainWindow.model.ProductListModule.Products;
             MainWindow.model.ProductListModule.CommandBindingCollection = CommandBindings;
+            MainWindow.model.ProductListModule.LoadCommands();
         }
     }
 }

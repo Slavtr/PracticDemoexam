@@ -189,6 +189,7 @@
       <DependentUpon>DataModel.edmx</DependentUpon>
       <LastGenOutput>DataModel.cs</LastGenOutput>
     </Content>
+    <Resource Include="Resources\products\picture.png" />
     <Resource Include="Resources\products\5fb128cc69235.jpg" />
     <Resource Include="Resources\products\5fb128cc719a6.jpg" />
     <Resource Include="Resources\products\5fb128cc753e3.jpg" />

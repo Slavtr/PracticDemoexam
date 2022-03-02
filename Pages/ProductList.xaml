@@ -3,8 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:PracticDemoexam.Pages" xmlns:modules="clr-namespace:PracticDemoexam.Models"
-      d:DataContext="{d:DesignInstance Type=modules:ViewModel}"
+      xmlns:local="clr-namespace:PracticDemoexam.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ProductList">
@@ -16,28 +15,28 @@
             <ColumnDefinition Width="91*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="11*"/>
-            <RowDefinition Height="130*"/>
-            <RowDefinition Height="9*"/>
+            <RowDefinition Height="32"/>
+            <RowDefinition/>
+            <RowDefinition Height="23"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="0">
             <Label Content="Поиск"/>
-            <TextBox Width="400" Text="{Binding Path=ProductListModule.SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <TextBox MinWidth="350" Text="{Binding Path=ProductListModule.SearchString, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="1">
             <Label Content="Сортировка"/>
-            <ComboBox Width="100" ItemsSource="{Binding Path=ProductListModule.SortVariants, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=ProductListModule.CurrentSort, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <ComboBox MinWidth="100" ItemsSource="{Binding Path=ProductListModule.SortVariants, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=ProductListModule.CurrentSort, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal" Grid.Column="2">
             <Label Content="Фильтр"/>
-            <ComboBox Width="100" ItemsSource="{Binding Path=ProductListModule.ProductTypes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <ComboBox MinWidth="100" ItemsSource="{Binding Path=ProductListModule.ProductTypes, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentType, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Button Content="Х" Width="20" Command="{Binding Path=ProductListModule.ClearFilterCommand}"/>
         </StackPanel>
-        <ListBox Grid.Row="1" Grid.ColumnSpan="3" DataContext="{Binding Path=ProductListModule.Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" x:Name="lbProducts">
+        <ListBox Grid.Row="1" Grid.ColumnSpan="3" DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Products, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" x:Name="lbProducts">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <Image />
+                        <Image Source="{Binding Path=MainImage, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" MaxWidth="250" MaxHeight="250"/>
                         <StackPanel Orientation="Vertical">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Path=Product.ProductType.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
@@ -45,10 +44,19 @@
                                 <TextBlock Text="{Binding Path=Product.Title, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
                                 <TextBlock Text="{Binding Path=Cost, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" Margin="20, 0, 0, 0"/>
                             </StackPanel>
+                            <TextBlock Text="{Binding Path=Product.ArticleNumber, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}"/>
+                            <TextBlock Text="{Binding Path=Materials, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" MaxWidth="400" TextWrapping="WrapWithOverflow"/>
                         </StackPanel>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Pages, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=CurrentPage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
         </ListBox>
     </Grid>
 </Page>
