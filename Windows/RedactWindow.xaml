@@ -32,15 +32,16 @@
                     <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel>
+                                <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Path=Material.Title}"/>
+                                    <TextBox Text="{Binding Path=Count, Mode=TwoWay}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <StackPanel Orientation="Horizontal">
                         <Button Content="Добавить"/>
-                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterialCB}"/>
+                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterial}"/>
                         <Button Content="Удалить"/>
                     </StackPanel>
                 </StackPanel>
