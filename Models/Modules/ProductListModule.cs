@@ -6,18 +6,35 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PracticDemoexam.Models.Modules
 {
     public class ProductListModule : INotifyPropertyChanged
-    {   
-        public ProductListModule(IEnumerable<DataModel.Product> products, IEnumerable<DataModel.ProductType> productTypes)
+    {
+        public ProductListModule(IEnumerable<DataModel.Product> products, IEnumerable<DataModel.ProductType> productTypes, IEnumerable<DataModel.Material> materials, Func<int> save, Action<ProductVM> addProduct)
         {
             LoadProducts(products);
             LoadProductTypes(productTypes);
             LoadCommands();
+            LoadMaterials(materials);
+            SaveAll = save;
+            AddProduct = addProduct;
         }
+        
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged(string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        #region Functions
+
+        private readonly Func<int> SaveAll;
+        private readonly Action<ProductVM> AddProduct;
+
+        #endregion
 
         #region LoadThings
 
@@ -53,6 +70,21 @@ namespace PracticDemoexam.Models.Modules
             }
             return true;
         }
+        private bool LoadMaterials(IEnumerable<DataModel.Material> materials)
+        {
+            try
+            {
+                foreach (DataModel.Material m in materials)
+                {
+                    Materials.Add(m);
+                }
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
         public bool LoadCommands()
         {
             ClearFilterCommand = new RoutedCommand("ClearFilter", GetType());
@@ -62,23 +94,49 @@ namespace PracticDemoexam.Models.Modules
             PageRightCommand = new RoutedCommand("PageRight", GetType());
             PageRightCommandBinding = new CommandBinding(PageRightCommand, PageScrollMethod, CanExecutePageScroll);
 
+            ChangeManyCostsCommand = new RoutedCommand("ChangeManyCosts", GetType());
+            ChangeManyCostsCommandBinding = new CommandBinding(ChangeManyCostsCommand, ChangeManyCosts, CanExecuteChangeManyCosts);
 
+            ChangeCostCommand = new RoutedCommand("ChangeCost", GetType());
+            ChangeCostCommandBinding = new CommandBinding(ChangeCostCommand, ChangeCost);
 
-            CommandBindingCollection.Add(ClearFilterCommandBinding);
-            CommandBindingCollection.Add(PageLeftCommandBinding);
-            CommandBindingCollection.Add(PageRightCommandBinding);
+            RedactItemCommand = new RoutedCommand("RedactItem", GetType());
+            RedactItemCommandBinding = new CommandBinding(RedactItemCommand, RedactItem);
+
+            CancelRedactItemCommand = new RoutedCommand("CancelRedactItem", GetType());
+            CancelRedactItemCommandBinding = new CommandBinding(CancelRedactItemCommand, RedactItem);
+
+            ItemRedactCommand = new RoutedCommand("ItemRedact", GetType());
+            ItemRedactCommandBinding = new CommandBinding(ItemRedactCommand, RedactItemWindowOpen, CanExecuteRedactItem);
+
+            AddProductCommand = new RoutedCommand("AddProduct", GetType());
+            AddProductCommandBinding = new CommandBinding(AddProductCommand, AddProductExecute);
+
+            ProductPageCommandBindingCollection.Add(ClearFilterCommandBinding);
+            ProductPageCommandBindingCollection.Add(PageLeftCommandBinding);
+            ProductPageCommandBindingCollection.Add(PageRightCommandBinding);
+            ProductPageCommandBindingCollection.Add(ChangeManyCostsCommandBinding);
+            ProductPageCommandBindingCollection.Add(ItemRedactCommandBinding);
+            ProductPageCommandBindingCollection.Add(AddProductCommandBinding);
+
+            ProductChangeCostCommandBindingCollection.Add(ChangeCostCommandBinding);
+
+            ProductRedactCommandBindingCollection.Add(RedactItemCommandBinding);
+            ProductRedactCommandBindingCollection.Add(CancelRedactItemCommandBinding);
             return true;
         }
 
         #endregion
 
-        public CommandBindingCollection CommandBindingCollection { get; set; } = new CommandBindingCollection();
+        #region CommandBindingCollections
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        public CommandBindingCollection ProductPageCommandBindingCollection { get; set; } = new CommandBindingCollection();
+
+        public CommandBindingCollection ProductChangeCostCommandBindingCollection { get; set; } = new CommandBindingCollection();
+
+        public CommandBindingCollection ProductRedactCommandBindingCollection { get; set; } = new CommandBindingCollection();
+
+        #endregion
 
         #region SearchSortFilter
 
@@ -245,12 +303,12 @@ namespace PracticDemoexam.Models.Modules
                     PoginationPages.Add(new KeyValuePair<int, BindingList<ProductVM>>(i, new BindingList<ProductVM>()));
                     for (int j = 0; j < (value.Count < 20 ? value.Count : 20); j++)
                     {
-                        PoginationPages[i-1].Value.Add(value[k]);
+                        PoginationPages[i - 1].Value.Add(value[k]);
                         k++;
                     }
                 }
                 Pages.Clear();
-                for(int i = 1; i < _countPages; i++)
+                for (int i = 1; i < _countPages; i++)
                 {
                     Pages.Add(i.ToString());
                 }
@@ -311,7 +369,7 @@ namespace PracticDemoexam.Models.Modules
         }
         private void CanExecutePageScroll(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(Pages.Count > 1)
+            if (Pages.Count > 1)
             {
                 e.CanExecute = true;
             }
@@ -325,6 +383,11 @@ namespace PracticDemoexam.Models.Modules
 
         #region ContextMenu
 
+        public Window Window { get; set; } = new Window();
+
+        public ObservableCollection<DataModel.Material> Materials { get; set; } = new ObservableCollection<DataModel.Material>();
+        public DataModel.Material CurrentMaterial { get; set; }
+
         private ObservableCollection<ProductVM> SelectedItems
         {
             get
@@ -333,17 +396,46 @@ namespace PracticDemoexam.Models.Modules
                 return ret;
             }
         }
+        public ProductVM SelectedItem
+        {
+            get
+            {
+                if(SelectedItems.Count > 1)
+                {
+                    return null;
+                }
+                else
+                {
+                    return SelectedItems.First();
+                }
+            }
+            set
+            {
+                value.IsSelected = true;
+                foreach(ProductVM pvm in SelectedItems)
+                {
+                    pvm.IsSelected = false;
+                }
+                SelectedItems.Clear();
+                SelectedItems.Add(value);
+            }
+        }
 
         public RoutedCommand ItemRedactCommand { get; private set; }
         public CommandBinding ItemRedactCommandBinding { get; private set; }
 
-        private void RedactItem(object sender, ExecutedRoutedEventArgs e)
+        private void RedactItemWindowOpen(object sender, ExecutedRoutedEventArgs e)
         {
-            
+            var window = new Windows.RedactWindow()
+            {
+                Owner = Window
+            };
+            window.ShowDialog();
+            SelectedItem.BeginEdit();
         }
         private void CanExecuteRedactItem(object sender, CanExecuteRoutedEventArgs e)
         {
-            if(SelectedItems.Count == 1)
+            if (SelectedItems.Count == 1)
             {
                 e.CanExecute = true;
             }
@@ -353,12 +445,37 @@ namespace PracticDemoexam.Models.Modules
             }
         }
 
+        public RoutedCommand RedactItemCommand { get; private set; }
+        public CommandBinding RedactItemCommandBinding { get; private set; }
+
+        public RoutedCommand CancelRedactItemCommand { get; private set; }
+        public CommandBinding CancelRedactItemCommandBinding { get; private set; }
+
+        private void RedactItem(object sender, ExecutedRoutedEventArgs e)
+        {
+            switch((e.Command as RoutedCommand).Name)
+            {
+                case "RedactItem":
+                    SaveAll();
+                    (sender as Window).Hide();
+                    OnPropertyChanged("Products");
+                    break;
+                case "CancelRedactItem":
+                    SelectedItem.CancelEdit();
+                    break;
+            }
+        }
+
         public RoutedCommand ChangeManyCostsCommand { get; private set; }
         public CommandBinding ChangeManyCostsCommandBinding { get; private set; }
 
         private void ChangeManyCosts(object sender, ExecutedRoutedEventArgs e)
         {
-             
+            var window = new Windows.ChangeCostWindow
+            {
+                Owner = Window
+            };
+            window.ShowDialog();
         }
         private void CanExecuteChangeManyCosts(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -370,6 +487,65 @@ namespace PracticDemoexam.Models.Modules
             {
                 e.CanExecute = false;
             }
+        }
+
+        public bool WayOfChangeCost { get; set; }
+        public string CostChangeNumber
+        {
+            get;
+            set;
+        }
+
+        public RoutedCommand ChangeCostCommand { get; private set; }
+        public CommandBinding ChangeCostCommandBinding { get; private set; }
+
+        private void ChangeCost(object sender, ExecutedRoutedEventArgs e)
+        {
+            if (int.TryParse(CostChangeNumber, out int nomber))
+            {
+                foreach (ProductVM pvm in SelectedItems)
+                {
+                    if (WayOfChangeCost)
+                    {
+                        pvm.Cost += nomber;
+                    }
+                    else
+                    {
+                        pvm.Cost = nomber;
+                    }
+                }
+            }
+            (sender as Window).Hide();
+            WayOfChangeCost = false;
+            CostChangeNumber = string.Empty;
+            SaveAll();
+            OnPropertyChanged("Products");
+        }
+
+        public RoutedCommand AddProductCommand { get; private set; }
+        public CommandBinding AddProductCommandBinding { get; private set; }
+
+        private void AddProductExecute(object sender, ExecutedRoutedEventArgs e)
+        {
+            SelectedItem = new ProductVM();
+            AddProduct.Invoke(SelectedItem);
+            var window = new Windows.RedactWindow()
+            {
+                Owner = Window
+            };
+            window.ShowDialog();
+            SelectedItem.BeginEdit();
+        }
+
+        public RoutedCommand AddMaterialCommand { get; private set; }
+        public CommandBinding AddMaterialCommandBinding { get; private set; }
+
+        public RoutedCommand DeleteMaterialCommand { get; private set; }
+        public CommandBinding DeleteMaterialCommandBinding { get; private set; }
+
+        private void CanExecuteAddMaterialCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+
         }
 
         #endregion

@@ -27,6 +27,16 @@ namespace PracticDemoexam
         {
             InitializeComponent();
             MainFrame.Content = new ProductList();
+            model.ProductListModule.Window = this;
+            this.Closed += MainWindow_Closed;
+        }
+
+        private void MainWindow_Closed(object sender, EventArgs e)
+        {
+            foreach(Window w in Application.Current.Windows)
+            {
+                w.Close();
+            }
         }
     }
 }

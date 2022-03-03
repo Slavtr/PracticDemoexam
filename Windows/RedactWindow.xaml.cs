@@ -10,21 +10,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PracticDemoexam.Pages
+namespace PracticDemoexam.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для ProductList.xaml
+    /// Логика взаимодействия для RedactWindow.xaml
     /// </summary>
-    public partial class ProductList : Page
+    public partial class RedactWindow : Window
     {
-        public ProductList()
+        public RedactWindow()
         {
             InitializeComponent();
-            this.DataContext = MainWindow.model;
-            MainWindow.model.ProductListModule.ProductPageCommandBindingCollection = CommandBindings;
+            DataContext = MainWindow.model;
+            MainWindow.model.ProductListModule.ProductRedactCommandBindingCollection = CommandBindings;
             MainWindow.model.ProductListModule.LoadCommands();
         }
     }

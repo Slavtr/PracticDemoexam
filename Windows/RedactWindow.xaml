@@ -1,0 +1,54 @@
+﻿<Window x:Class="PracticDemoexam.Windows.RedactWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PracticDemoexam.Windows"
+        mc:Ignorable="d"
+        Title="Редактировать"
+        SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel>
+                    <Label Content="Название"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.Title, Mode=TwoWay}"/>
+                    <Label Content="Тип"/>
+                    <ComboBox ItemsSource="{Binding Path=ProductListModule.ProductTypes}" DisplayMemberPath="Title" SelectedValue="{Binding Path=ProductListModule.SelectedItem.Product.ProductType, Mode=TwoWay}"/>
+                    <Label Content="Артикул"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ArticleNumber, Mode=TwoWay}"/>
+                    <Label Content="Описание"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.Description, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
+                    <Label Content="Картинка"/>
+                    <Button Content="Выбрать" />
+                    <Label Content="Количество человек для производства"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ProductionPersonCount, Mode=TwoWay}"/>
+                    <Label Content="Номер цеха"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ProductionWorkshopNumber, Mode=TwoWay}"/>
+                    <Label Content="Минимальная цена для агента"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.MinCostForAgent, Mode=TwoWay}"/>
+                </StackPanel>
+                <StackPanel>
+                    <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Path=Material.Title}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Добавить"/>
+                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterialCB}"/>
+                        <Button Content="Удалить"/>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Отмена" Margin="1" Command="{Binding Path=ProductListModule.CancelRedactItemCommand}" IsCancel="True"/>
+                <Button Content="Сохранить" Margin="1" Command="{Binding Path=ProductListModule.RedactItemCommand}" IsDefault="True"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

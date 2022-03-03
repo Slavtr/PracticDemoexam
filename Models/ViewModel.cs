@@ -11,8 +11,14 @@ namespace PracticDemoexam.Models
     {
         public ViewModel()
         {
-            ProductListModule = new Modules.ProductListModule(_entities.Product, _entities.ProductType);
+            ProductListModule = new Modules.ProductListModule(_entities.Product, _entities.ProductType, _entities.Material, _entities.SaveChanges, AddProduct);
         }
+
+        private void AddProduct(ProductVM product)
+        {
+            _entities.Product.Add(product.Product);
+        }
+
         private DataModel.Entities _entities = new DataModel.Entities();
 
         public System.Windows.Controls.Frame MainFrame { get; set; }

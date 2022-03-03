@@ -10,21 +10,20 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PracticDemoexam.Pages
+namespace PracticDemoexam.Windows
 {
     /// <summary>
-    /// Логика взаимодействия для ProductList.xaml
+    /// Логика взаимодействия для ChangeCostWindow.xaml
     /// </summary>
-    public partial class ProductList : Page
+    public partial class ChangeCostWindow : Window
     {
-        public ProductList()
+        public ChangeCostWindow()
         {
             InitializeComponent();
             this.DataContext = MainWindow.model;
-            MainWindow.model.ProductListModule.ProductPageCommandBindingCollection = CommandBindings;
+            MainWindow.model.ProductListModule.ProductChangeCostCommandBindingCollection = CommandBindings;
             MainWindow.model.ProductListModule.LoadCommands();
         }
     }

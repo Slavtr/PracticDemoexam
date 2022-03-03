@@ -65,8 +65,8 @@
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Редактировать" Command=""/>
-                    <MenuItem Header="Изменить цену на ..." Command=""/>
+                    <MenuItem Header="Редактировать" Command="{Binding Path=ItemRedactCommand}"/>
+                    <MenuItem Header="Изменить цену на ..." Command="{Binding Path=ChangeManyCostsCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
@@ -81,5 +81,6 @@
             </ListBox>
             <Button Content=">" Command="{Binding Path=ProductListModule.PageRightCommand}"/>
         </StackPanel>
+        <Button Content=" + " Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left"/>
     </Grid>
 </Page>

@@ -8,13 +8,19 @@ using System.Windows.Media.Imaging;
 
 namespace PracticDemoexam.Models.PartialModels
 {
-    public class ProductVM : INotifyPropertyChanged
+    public class ProductVM : INotifyPropertyChanged, IEditableObject
     {
         public DataModel.Product Product { get; set; }
 
         public decimal Cost
         {
             get { return Product.MinCostForAgent; }
+            set 
+            { 
+                Product.MinCostForAgent = value;
+                OnPropertyChanged("Product");
+                OnPropertyChanged("Cost");
+            }
         }
 
         public string Materials
@@ -28,6 +34,13 @@ namespace PracticDemoexam.Models.PartialModels
                 }
                 ret = ret.Trim(new char[]{ ',', ' '});
                 return ret;
+            }
+        }
+        public List<DataModel.ProductMaterial> ListMaterials
+        {
+            get
+            {
+                return Product.ProductMaterial.ToList();
             }
         }
 
@@ -85,6 +98,45 @@ namespace PracticDemoexam.Models.PartialModels
         private void OnPropertyChanged(string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private ProductVM UnchangedProduct;
+
+        public void BeginEdit()
+        {
+            UnchangedProduct = new ProductVM
+            {
+                Product = new DataModel.Product
+                {
+                    ID = Product.ID,
+                    ProductTypeID = Product.ProductTypeID,
+                    ArticleNumber = Product.ArticleNumber,
+                    Description = Product.Description,
+                    Image = Product.Image,
+                    MinCostForAgent = Product.MinCostForAgent,
+                    ProductCostHistory = Product.ProductCostHistory,
+                    ProductionPersonCount = Product.ProductionPersonCount,
+                    ProductionWorkshopNumber = Product.ProductionWorkshopNumber,
+                    ProductMaterial = Product.ProductMaterial,
+                    ProductSale = Product.ProductSale,
+                    ProductType = Product.ProductType,
+                    Title = Product.Title
+                },
+                IsSelected = this.IsSelected
+            };
+        }
+
+        public void EndEdit()
+        {
+            UnchangedProduct = null;
+        }
+
+        public void CancelEdit()
+        {
+            if (UnchangedProduct == null) return;
+
+            Product = UnchangedProduct.Product;
+            IsSelected = UnchangedProduct.IsSelected;
         }
     }
 }
