@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -16,10 +17,13 @@ namespace PracticDemoexam.Models.PartialModels
         {
             get { return Product.MinCostForAgent; }
             set 
-            { 
-                Product.MinCostForAgent = value;
-                OnPropertyChanged("Product");
-                OnPropertyChanged("Cost");
+            {
+                if (value >= 0)
+                {
+                    Product.MinCostForAgent = value;
+                    OnPropertyChanged("Product");
+                    OnPropertyChanged("Cost");
+                }
             }
         }
 
@@ -36,11 +40,16 @@ namespace PracticDemoexam.Models.PartialModels
                 return ret;
             }
         }
-        public List<DataModel.ProductMaterial> ListMaterials
+        public ObservableCollection<DataModel.ProductMaterial> ListMaterials
         {
             get
             {
-                return Product.ProductMaterial.ToList();
+                return new ObservableCollection<DataModel.ProductMaterial>(Product.ProductMaterial);
+            }
+            set
+            {
+                Product.ProductMaterial = value.ToList();
+                OnPropertyChanged("ListMaterials");
             }
         }
 
@@ -124,11 +133,13 @@ namespace PracticDemoexam.Models.PartialModels
                 },
                 IsSelected = this.IsSelected
             };
+            OnPropertyChanged("IsIsEdit");
         }
 
         public void EndEdit()
         {
             UnchangedProduct = null;
+            OnPropertyChanged("IsIsEdit");
         }
 
         public void CancelEdit()
@@ -137,6 +148,22 @@ namespace PracticDemoexam.Models.PartialModels
 
             Product = UnchangedProduct.Product;
             IsSelected = UnchangedProduct.IsSelected;
+            OnPropertyChanged("IsIsEdit");
+        }
+
+        public bool IsInEdit
+        {
+            get
+            {
+                if(UnchangedProduct == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
         }
     }
 }

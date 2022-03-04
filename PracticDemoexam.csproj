@@ -70,6 +70,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\PartialModels\ProductMaterial.cs" />
     <Compile Include="Windows\ChangeCostWindow.xaml.cs">
       <DependentUpon>ChangeCostWindow.xaml</DependentUpon>
     </Compile>

@@ -11,12 +11,24 @@ namespace PracticDemoexam.Models
     {
         public ViewModel()
         {
-            ProductListModule = new Modules.ProductListModule(_entities.Product, _entities.ProductType, _entities.Material, _entities.SaveChanges, AddProduct);
+            ProductListModule = new Modules.ProductListModule(_entities.Product, _entities.ProductType, _entities.Material, _entities.SaveChanges, AddProduct, RemoveProduct);
         }
 
         private void AddProduct(ProductVM product)
         {
             _entities.Product.Add(product.Product);
+        }
+
+        private void RemoveProduct(ProductVM product)
+        {
+            var productSale = _entities.ProductSale.FirstOrDefault(x => x.Product.ID == product.Product.ID);
+            if (productSale == null)
+            {
+                _entities.ProductCostHistory.RemoveRange(_entities.ProductCostHistory.Where(x => x.Product.ID == product.Product.ID));
+                _entities.ProductMaterial.RemoveRange(_entities.ProductMaterial.Where(x => x.Product.ID == product.Product.ID));
+                _entities.Product.Remove(product.Product);
+                _entities.SaveChanges();
+            }
         }
 
         private DataModel.Entities _entities = new DataModel.Entities();

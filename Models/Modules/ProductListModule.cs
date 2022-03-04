@@ -13,7 +13,13 @@ namespace PracticDemoexam.Models.Modules
 {
     public class ProductListModule : INotifyPropertyChanged
     {
-        public ProductListModule(IEnumerable<DataModel.Product> products, IEnumerable<DataModel.ProductType> productTypes, IEnumerable<DataModel.Material> materials, Func<int> save, Action<ProductVM> addProduct)
+        public ProductListModule(
+            IEnumerable<DataModel.Product> products,
+            IEnumerable<DataModel.ProductType> productTypes,
+            IEnumerable<DataModel.Material> materials,
+            Func<int> save,
+            Action<ProductVM> addProduct,
+            Action<ProductVM> removeProduct)
         {
             LoadProducts(products);
             LoadProductTypes(productTypes);
@@ -21,8 +27,9 @@ namespace PracticDemoexam.Models.Modules
             LoadMaterials(materials);
             SaveAll = save;
             AddProduct = addProduct;
+            RemoveProduct = removeProduct;
         }
-        
+
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged(string propertyName = "")
         {
@@ -33,6 +40,7 @@ namespace PracticDemoexam.Models.Modules
 
         private readonly Func<int> SaveAll;
         private readonly Action<ProductVM> AddProduct;
+        private readonly Action<ProductVM> RemoveProduct;
 
         #endregion
 
@@ -77,6 +85,7 @@ namespace PracticDemoexam.Models.Modules
                 foreach (DataModel.Material m in materials)
                 {
                     Materials.Add(m);
+                    _unchangedMaterials.Add(m);
                 }
             }
             catch
@@ -112,6 +121,15 @@ namespace PracticDemoexam.Models.Modules
             AddProductCommand = new RoutedCommand("AddProduct", GetType());
             AddProductCommandBinding = new CommandBinding(AddProductCommand, AddProductExecute);
 
+            AddMaterialCommand = new RoutedCommand("AddMaterial", GetType());
+            AddMaterialCommandBinding = new CommandBinding(AddMaterialCommand, ExecuteAddMaterialCommand, CanExecuteAddMaterialCommand);
+
+            DeleteMaterialCommand = new RoutedCommand("DeleteMaterial", GetType());
+            DeleteMaterialCommandBinding = new CommandBinding(DeleteMaterialCommand, ExecuteDeleteMaterialCommand, CanExecuteDeleteMaterialCommand);
+
+            DeleteProductCommand = new RoutedCommand("DeleteProduct", GetType());
+            DeleteProductCommandBinding = new CommandBinding(DeleteProductCommand, ExecuteDeleteProductCommand, CanExecuteDeleteProductCommand);
+
             ProductPageCommandBindingCollection.Add(ClearFilterCommandBinding);
             ProductPageCommandBindingCollection.Add(PageLeftCommandBinding);
             ProductPageCommandBindingCollection.Add(PageRightCommandBinding);
@@ -123,6 +141,9 @@ namespace PracticDemoexam.Models.Modules
 
             ProductRedactCommandBindingCollection.Add(RedactItemCommandBinding);
             ProductRedactCommandBindingCollection.Add(CancelRedactItemCommandBinding);
+            ProductRedactCommandBindingCollection.Add(AddMaterialCommandBinding);
+            ProductRedactCommandBindingCollection.Add(DeleteMaterialCommandBinding);
+            ProductRedactCommandBindingCollection.Add(DeleteProductCommandBinding);
             return true;
         }
 
@@ -153,7 +174,7 @@ namespace PracticDemoexam.Models.Modules
                 else
                 {
                     var productVMs = Products.Where(x => x.Product.Title.Contains(value)).ToList();
-                    WholeProducts = new BindingList<ProductVM>(productVMs);
+                    WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                 }
                 OnPropertyChanged("Products");
                 OnPropertyChanged("SearchString");
@@ -187,36 +208,36 @@ namespace PracticDemoexam.Models.Modules
                             if (_curSort == value)
                             {
                                 var productVMs = Products.OrderByDescending(x => x.Product.Title).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
                                 var productVMs = Products.OrderBy(x => x.Product.Title).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
                         case "Номер цеха":
                             if (_curSort == value)
                             {
                                 var productVMs = Products.OrderByDescending(x => x.Product.ProductionWorkshopNumber).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
                                 var productVMs = Products.OrderBy(x => x.Product.ProductionWorkshopNumber).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
                         case "Мин. стоимость":
                             if (_curSort == value)
                             {
                                 var productVMs = Products.OrderByDescending(x => x.Product.MinCostForAgent).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
                                 var productVMs = Products.OrderBy(x => x.Product.MinCostForAgent).ToList();
-                                WholeProducts = new BindingList<ProductVM>(productVMs);
+                                WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
                     }
@@ -238,7 +259,7 @@ namespace PracticDemoexam.Models.Modules
                 {
                     _currType = value;
                     var productVMs = UnchangedProducts.Where(x => x.Product.ProductTypeID == _currType.ID).ToList();
-                    WholeProducts = new BindingList<ProductVM>(productVMs);
+                    WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                     OnPropertyChanged("CurrentType");
                     OnPropertyChanged("Products");
                 }
@@ -271,8 +292,8 @@ namespace PracticDemoexam.Models.Modules
 
         #region Pogination
 
-        private BindingList<KeyValuePair<int, BindingList<ProductVM>>> PoginationPages = new BindingList<KeyValuePair<int, BindingList<ProductVM>>>();
-        public BindingList<ProductVM> Products
+        private ObservableCollection<KeyValuePair<int, ObservableCollection<ProductVM>>> PoginationPages = new ObservableCollection<KeyValuePair<int, ObservableCollection<ProductVM>>>();
+        public ObservableCollection<ProductVM> Products
         {
             get
             {
@@ -283,8 +304,8 @@ namespace PracticDemoexam.Models.Modules
                 WholeProducts = value;
             }
         }
-        private BindingList<ProductVM> _wholeProducts;
-        private BindingList<ProductVM> WholeProducts
+        private ObservableCollection<ProductVM> _wholeProducts;
+        private ObservableCollection<ProductVM> WholeProducts
         {
             get
             {
@@ -300,7 +321,7 @@ namespace PracticDemoexam.Models.Modules
                 PoginationPages.Clear();
                 for (int i = 1; i <= _countPages; i++)
                 {
-                    PoginationPages.Add(new KeyValuePair<int, BindingList<ProductVM>>(i, new BindingList<ProductVM>()));
+                    PoginationPages.Add(new KeyValuePair<int, ObservableCollection<ProductVM>>(i, new ObservableCollection<ProductVM>()));
                     for (int j = 0; j < (value.Count < 20 ? value.Count : 20); j++)
                     {
                         PoginationPages[i - 1].Value.Add(value[k]);
@@ -319,7 +340,7 @@ namespace PracticDemoexam.Models.Modules
                 OnPropertyChanged("CurrentPage");
             }
         }
-        private readonly BindingList<ProductVM> UnchangedProducts = new BindingList<ProductVM>();
+        private readonly ObservableCollection<ProductVM> UnchangedProducts = new ObservableCollection<ProductVM>();
 
         private int _countPages;
         private int _currentPage;
@@ -386,7 +407,30 @@ namespace PracticDemoexam.Models.Modules
         public Window Window { get; set; } = new Window();
 
         public ObservableCollection<DataModel.Material> Materials { get; set; } = new ObservableCollection<DataModel.Material>();
-        public DataModel.Material CurrentMaterial { get; set; }
+        private ObservableCollection<DataModel.Material> _unchangedMaterials = new ObservableCollection<DataModel.Material>();
+        public DataModel.Material AddMaterial { get; set; }
+        public DataModel.ProductMaterial DeleteMaterial { get; set; }
+        private string _materialFilter;
+        public string TextMaterial
+        {
+            get
+            {
+                return _materialFilter;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value))
+                {
+                    Materials = _unchangedMaterials;
+                }
+                else
+                {
+                    Materials = new ObservableCollection<DataModel.Material>(_unchangedMaterials.Where(x => x.Title.Contains(value)));
+                }
+                _materialFilter = value;
+                OnPropertyChanged("Materials");
+            }
+        }
 
         private ObservableCollection<ProductVM> SelectedItems
         {
@@ -400,7 +444,7 @@ namespace PracticDemoexam.Models.Modules
         {
             get
             {
-                if(SelectedItems.Count > 1)
+                if (SelectedItems.Count > 1 && SelectedItems.Count != 0)
                 {
                     return null;
                 }
@@ -412,12 +456,33 @@ namespace PracticDemoexam.Models.Modules
             set
             {
                 value.IsSelected = true;
-                foreach(ProductVM pvm in SelectedItems)
+                foreach (ProductVM pvm in SelectedItems)
                 {
                     pvm.IsSelected = false;
                 }
                 SelectedItems.Clear();
                 SelectedItems.Add(value);
+            }
+        }
+        public string SelectedItemArticleNumber
+        {
+            get
+            {
+                return SelectedItem.Product.ArticleNumber;
+            }
+            set
+            {
+                var listArticles = Products.Where(x => x.Product.ArticleNumber.Contains(value)).ToList();
+                if (listArticles.Count == 1 && listArticles.First() == SelectedItem)
+                {
+                    SelectedItem.Product.ArticleNumber = value;
+                }
+                else
+                {
+                    MessageBox.Show("Такой артикул уже есть");
+                }
+                OnPropertyChanged("SelectedItemArticleNumber");
+                OnPropertyChanged("SelectedItem");
             }
         }
 
@@ -430,8 +495,8 @@ namespace PracticDemoexam.Models.Modules
             {
                 Owner = Window
             };
-            window.ShowDialog();
             SelectedItem.BeginEdit();
+            window.ShowDialog();
         }
         private void CanExecuteRedactItem(object sender, CanExecuteRoutedEventArgs e)
         {
@@ -453,7 +518,7 @@ namespace PracticDemoexam.Models.Modules
 
         private void RedactItem(object sender, ExecutedRoutedEventArgs e)
         {
-            switch((e.Command as RoutedCommand).Name)
+            switch ((e.Command as RoutedCommand).Name)
             {
                 case "RedactItem":
                     SaveAll();
@@ -462,6 +527,8 @@ namespace PracticDemoexam.Models.Modules
                     break;
                 case "CancelRedactItem":
                     SelectedItem.CancelEdit();
+                    (sender as Window).Hide();
+                    OnPropertyChanged("Products");
                     break;
             }
         }
@@ -543,9 +610,68 @@ namespace PracticDemoexam.Models.Modules
         public RoutedCommand DeleteMaterialCommand { get; private set; }
         public CommandBinding DeleteMaterialCommandBinding { get; private set; }
 
-        private void CanExecuteAddMaterialCommand(object sender, ExecutedRoutedEventArgs e)
+        private void CanExecuteAddMaterialCommand(object sender, CanExecuteRoutedEventArgs e)
         {
+            if (AddMaterial != null)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
+        private void CanExecuteDeleteMaterialCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (DeleteMaterial != null)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
+        }
 
+        private void ExecuteAddMaterialCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            var material = new DataModel.ProductMaterial(AddMaterial, SelectedItem.Product, 0);
+            var listMat = SelectedItem.ListMaterials;
+            listMat.Add(material);
+            SelectedItem.ListMaterials = listMat;
+            OnPropertyChanged("SelectedItem.ListMaterials");
+        }
+        private void ExecuteDeleteMaterialCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            var listMat = SelectedItem.ListMaterials;
+            listMat.Remove(SelectedItem.ListMaterials.First(x => x == DeleteMaterial));
+            SelectedItem.ListMaterials = listMat;
+        }
+
+        public RoutedCommand DeleteProductCommand { get; private set; }
+        public CommandBinding DeleteProductCommandBinding { get; private set; }
+
+        private void ExecuteDeleteProductCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            var removedProduct = SelectedItem;
+            Products.Remove(removedProduct);
+            RemoveProduct(removedProduct);
+            (sender as Window).Hide();
+            WayOfChangeCost = false;
+            CostChangeNumber = string.Empty;
+            SaveAll();
+            OnPropertyChanged("Products");
+        }
+        private void CanExecuteDeleteProductCommand(object sender, CanExecuteRoutedEventArgs e)
+        {
+            if (SelectedItems.Count == 1)
+            {
+                e.CanExecute = true;
+            }
+            else
+            {
+                e.CanExecute = false;
+            }
         }
 
         #endregion

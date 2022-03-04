@@ -16,7 +16,7 @@
                     <Label Content="Тип"/>
                     <ComboBox ItemsSource="{Binding Path=ProductListModule.ProductTypes}" DisplayMemberPath="Title" SelectedValue="{Binding Path=ProductListModule.SelectedItem.Product.ProductType, Mode=TwoWay}"/>
                     <Label Content="Артикул"/>
-                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ArticleNumber, Mode=TwoWay}"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItemArticleNumber, Mode=TwoWay}"/>
                     <Label Content="Описание"/>
                     <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.Description, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                     <Label Content="Картинка"/>
@@ -26,10 +26,10 @@
                     <Label Content="Номер цеха"/>
                     <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ProductionWorkshopNumber, Mode=TwoWay}"/>
                     <Label Content="Минимальная цена для агента"/>
-                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.MinCostForAgent, Mode=TwoWay}"/>
+                    <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Cost, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel>
-                    <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials}">
+                    <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" SelectedItem="{Binding Path=ProductListModule.DeleteMaterial, Mode=TwoWay}" SelectionMode="Single">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
@@ -42,11 +42,15 @@
                             <ContextMenu>
                                 <MenuItem Header="Добавить">
                                     <StackPanel Orientation="Horizontal">
-                                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterial}"/>
-                                        <Button Content="Добавить"/>
+                                        <TextBox Text="{Binding Path=ProductListModule.TextMaterial, UpdateSourceTrigger=LostFocus, Mode=TwoWay}" MinWidth="100"/>
+                                        <ComboBox 
+                                            ItemsSource="{Binding Path=ProductListModule.Materials, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                                            DisplayMemberPath="Title" 
+                                            SelectedItem="{Binding Path=ProductListModule.AddMaterial, Mode=TwoWay}"/>
+                                        <Button Content="Добавить" Command="{Binding Path=ProductListModule.AddMaterialCommand}"/>
                                     </StackPanel>
                                 </MenuItem>
-                                <MenuItem Header="Удалить" />
+                                <MenuItem Header="Удалить" Command="{Binding Path=ProductListModule.DeleteMaterialCommand}"/>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                     </ListBox>
@@ -54,6 +58,7 @@
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                 <Button Content="Отмена" Margin="1" Command="{Binding Path=ProductListModule.CancelRedactItemCommand}" IsCancel="True"/>
+                <Button Content="Удалить" Margin="1" Command="{Binding Path=ProductListModule.DeleteProductCommand}"/>
                 <Button Content="Сохранить" Margin="1" Command="{Binding Path=ProductListModule.RedactItemCommand}" IsDefault="True"/>
             </StackPanel>
         </StackPanel>
