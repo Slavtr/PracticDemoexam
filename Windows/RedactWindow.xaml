@@ -38,12 +38,18 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Добавить">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterial}"/>
+                                        <Button Content="Добавить"/>
+                                    </StackPanel>
+                                </MenuItem>
+                                <MenuItem Header="Удалить" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
                     </ListBox>
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Добавить"/>
-                        <ComboBox ItemsSource="{Binding Path=ProductListModule.Materials}" DisplayMemberPath="Title" SelectedItem="{Binding Path=ProductListModule.CurrentMaterial}"/>
-                        <Button Content="Удалить"/>
-                    </StackPanel>
                 </StackPanel>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
