@@ -46,10 +46,11 @@ namespace PracticDemoexam.Models.Modules
 
         #region LoadThings
 
-        private bool LoadProducts(IEnumerable<DataModel.Product> products)
+        public bool LoadProducts(IEnumerable<DataModel.Product> products)
         {
             try
             {
+                UnchangedProducts.Clear();
                 foreach (DataModel.Product p in products)
                 {
                     UnchangedProducts.Add(new ProductVM(p));
@@ -173,7 +174,7 @@ namespace PracticDemoexam.Models.Modules
                 }
                 else
                 {
-                    var productVMs = Products.Where(x => x.Product.Title.Contains(value)).ToList();
+                    var productVMs = WholeProducts.Where(x => x.Product.Title.Contains(value)).ToList();
                     WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                 }
                 OnPropertyChanged("Products");
@@ -207,36 +208,36 @@ namespace PracticDemoexam.Models.Modules
                         case "Наименование":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.Title).ToList();
+                                var productVMs = UnchangedProducts.OrderByDescending(x => x.Product.Title).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.Title).ToList();
+                                var productVMs = UnchangedProducts.OrderBy(x => x.Product.Title).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
                         case "Номер цеха":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.ProductionWorkshopNumber).ToList();
+                                var productVMs = UnchangedProducts.OrderByDescending(x => x.Product.ProductionWorkshopNumber).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.ProductionWorkshopNumber).ToList();
+                                var productVMs = UnchangedProducts.OrderBy(x => x.Product.ProductionWorkshopNumber).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
                         case "Мин. стоимость":
                             if (_curSort == value)
                             {
-                                var productVMs = Products.OrderByDescending(x => x.Product.MinCostForAgent).ToList();
+                                var productVMs = UnchangedProducts.OrderByDescending(x => x.Product.MinCostForAgent).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             else
                             {
-                                var productVMs = Products.OrderBy(x => x.Product.MinCostForAgent).ToList();
+                                var productVMs = UnchangedProducts.OrderBy(x => x.Product.MinCostForAgent).ToList();
                                 WholeProducts = new ObservableCollection<ProductVM>(productVMs);
                             }
                             break;
@@ -314,7 +315,8 @@ namespace PracticDemoexam.Models.Modules
             set
             {
                 _wholeProducts = value;
-                _countPages = value.Count / 20;
+                double d = value.Count;
+                _countPages =  Convert.ToInt32(Math.Ceiling(d / 20)) + 1;
                 if (_countPages == 0) _countPages = 1;
                 _currentPage = 1;
                 int k = 0;
@@ -322,9 +324,11 @@ namespace PracticDemoexam.Models.Modules
                 for (int i = 1; i <= _countPages; i++)
                 {
                     PoginationPages.Add(new KeyValuePair<int, ObservableCollection<ProductVM>>(i, new ObservableCollection<ProductVM>()));
-                    for (int j = 0; j < (value.Count < 20 ? value.Count : 20); j++)
+                    int c = value.Count - k;
+                    for (int j = 0; j < (c < 20 ? c : 20); j++)
                     {
                         PoginationPages[i - 1].Value.Add(value[k]);
+                        if (k == value.Count) continue;
                         k++;
                     }
                 }
@@ -436,7 +440,7 @@ namespace PracticDemoexam.Models.Modules
         {
             get
             {
-                ObservableCollection<ProductVM> ret = new ObservableCollection<ProductVM>(Products.Where(x => x.IsSelected == true));
+                ObservableCollection<ProductVM> ret = new ObservableCollection<ProductVM>(WholeProducts.Where(x => x.IsSelected == true));
                 return ret;
             }
         }
@@ -453,16 +457,6 @@ namespace PracticDemoexam.Models.Modules
                     return SelectedItems.First();
                 }
             }
-            set
-            {
-                value.IsSelected = true;
-                foreach (ProductVM pvm in SelectedItems)
-                {
-                    pvm.IsSelected = false;
-                }
-                SelectedItems.Clear();
-                SelectedItems.Add(value);
-            }
         }
         public string SelectedItemArticleNumber
         {
@@ -473,8 +467,12 @@ namespace PracticDemoexam.Models.Modules
             set
             {
                 var listArticles = Products.Where(x => x.Product.ArticleNumber.Contains(value)).ToList();
-                if (listArticles.Count == 1 && listArticles.First() == SelectedItem)
+                if (listArticles.Count == 1 && listArticles.First() == SelectedItem || listArticles.Count == 0)
                 {
+                    if(value.Length >= 10)
+                    {
+                        value = value.Substring(0, 10);
+                    }
                     SelectedItem.Product.ArticleNumber = value;
                 }
                 else
@@ -594,8 +592,16 @@ namespace PracticDemoexam.Models.Modules
 
         private void AddProductExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            SelectedItem = new ProductVM();
-            AddProduct.Invoke(SelectedItem);
+            var product = new ProductVM();
+            product.IsSelected = true;
+            foreach (ProductVM pvm in SelectedItems)
+            {
+                pvm.IsSelected = false;
+            }
+            product.Product.ID = WholeProducts.Max(x => x.Product.ID) + 1;
+            UnchangedProducts.Add(product);
+            WholeProducts = UnchangedProducts;
+            AddProduct.Invoke(product);
             var window = new Windows.RedactWindow()
             {
                 Owner = Window

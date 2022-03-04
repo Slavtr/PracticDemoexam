@@ -67,7 +67,7 @@
                 <ContextMenu>
                     <MenuItem Header="Редактировать" Command="{Binding Path=ItemRedactCommand}"/>
                     <MenuItem Header="Изменить цену на ..." Command="{Binding Path=ChangeManyCostsCommand}"/>
-                    <MenuItem Header="Добавить" />
+                    <MenuItem Header="Добавить" Command="{Binding Path=AddProductCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>

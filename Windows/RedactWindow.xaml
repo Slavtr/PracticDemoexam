@@ -29,7 +29,7 @@
                     <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Cost, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
                 </StackPanel>
                 <StackPanel>
-                    <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" SelectedItem="{Binding Path=ProductListModule.DeleteMaterial, Mode=TwoWay}" SelectionMode="Single">
+                    <ListBox ItemsSource="{Binding Path=ProductListModule.SelectedItem.ListMaterials, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" SelectedItem="{Binding Path=ProductListModule.DeleteMaterial, Mode=TwoWay}" SelectionMode="Single" MinWidth="100" MinHeight="50">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal">
