@@ -53,22 +53,31 @@ namespace PracticDemoexam.Models.PartialModels
             }
         }
 
+        private BitmapImage _mainImage;
         public BitmapImage MainImage
         {
             get
             {
-                BitmapImage ret = new BitmapImage();
-                ret.BeginInit();
+                BitmapImage _mainImage = new BitmapImage();
+                _mainImage.BeginInit();
                 if (string.IsNullOrEmpty(Product.Image) || string.IsNullOrWhiteSpace(Product.Image))
                 {
-                    ret.UriSource = new Uri("\\Resources\\products\\picture.png", UriKind.Relative);
+                    _mainImage.UriSource = new Uri("\\Resources\\products\\picture.png", UriKind.Relative);
                 }
                 else
                 {
-                    ret.UriSource = new Uri("\\Resources" + Product.Image, UriKind.Relative);
+                    _mainImage.UriSource = new Uri("\\Resources" + Product.Image, UriKind.Relative);
                 }
-                ret.EndInit();
-                return ret;
+                _mainImage.EndInit();
+                return _mainImage;
+            }
+            set
+            {
+                string path = value.UriSource.OriginalString;
+                Product.Image = path;
+                _mainImage = value;
+                OnPropertyChanged("Product");
+                OnPropertyChanged("MainImage");
             }
         }
 

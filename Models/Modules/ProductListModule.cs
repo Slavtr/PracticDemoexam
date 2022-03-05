@@ -1,13 +1,17 @@
-﻿using PracticDemoexam.Models.PartialModels;
+﻿using Microsoft.Win32;
+using PracticDemoexam.Models.PartialModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
+using System.Drawing;
 
 namespace PracticDemoexam.Models.Modules
 {
@@ -131,6 +135,9 @@ namespace PracticDemoexam.Models.Modules
             DeleteProductCommand = new RoutedCommand("DeleteProduct", GetType());
             DeleteProductCommandBinding = new CommandBinding(DeleteProductCommand, ExecuteDeleteProductCommand, CanExecuteDeleteProductCommand);
 
+            SetImageCommand = new RoutedCommand("SetImage", GetType());
+            SetImageCommandBinding = new CommandBinding(SetImageCommand, ExecuteSetImageCommand);
+
             ProductPageCommandBindingCollection.Add(ClearFilterCommandBinding);
             ProductPageCommandBindingCollection.Add(PageLeftCommandBinding);
             ProductPageCommandBindingCollection.Add(PageRightCommandBinding);
@@ -145,6 +152,7 @@ namespace PracticDemoexam.Models.Modules
             ProductRedactCommandBindingCollection.Add(AddMaterialCommandBinding);
             ProductRedactCommandBindingCollection.Add(DeleteMaterialCommandBinding);
             ProductRedactCommandBindingCollection.Add(DeleteProductCommandBinding);
+            ProductRedactCommandBindingCollection.Add(SetImageCommandBinding);
             return true;
         }
 
@@ -677,6 +685,33 @@ namespace PracticDemoexam.Models.Modules
             else
             {
                 e.CanExecute = false;
+            }
+        }
+
+        #endregion
+
+        #region Images
+
+        public RoutedCommand SetImageCommand { get; private set; }
+        public CommandBinding SetImageCommandBinding { get; private set; }
+
+        private void ExecuteSetImageCommand(object sender, ExecutedRoutedEventArgs e)
+        {
+            OpenFileDialog dlg = new OpenFileDialog
+            {
+                Filter = "Images (.png, .jpg)|*.png;*.jpg",
+                Multiselect = false
+            };
+            bool? result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                string name = dlg.FileName.Split('\\').Last();
+                string newName = "../../Resources/products/" + name;
+                File.Copy(dlg.FileName, newName, true);
+
+                SelectedItem.MainImage = new BitmapImage(new Uri(newName.Replace("../../Resources", "").Replace("/", "\\"), UriKind.Relative));
+                OnPropertyChanged("Products");
             }
         }
 

@@ -20,7 +20,7 @@
                     <Label Content="Описание"/>
                     <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.Description, Mode=TwoWay}" TextWrapping="Wrap" AcceptsReturn="True"/>
                     <Label Content="Картинка"/>
-                    <Button Content="Выбрать" />
+                    <Button Content="Выбрать" Command="{Binding Path=ProductListModule.SetImageCommand}"/>
                     <Label Content="Количество человек для производства"/>
                     <TextBox Text="{Binding Path=ProductListModule.SelectedItem.Product.ProductionPersonCount, Mode=TwoWay}"/>
                     <Label Content="Номер цеха"/>
