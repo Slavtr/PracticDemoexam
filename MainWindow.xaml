@@ -7,6 +7,12 @@
         mc:Ignorable="d"
         Title="Намордник" Height="450" Width="800">
     <Grid>
-        <Frame x:Name="MainFrame" Margin="0,18,0,0"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="16*"/>
+            <RowDefinition Height="403*"/>
+        </Grid.RowDefinitions>
+        <Frame x:Name="MainFrame" Margin="0,1,0,0" Grid.Row="1"/>
+        <Image Source="\\main\RDP\41П\ПаламарчукСС\Desktop\2021-2022\Закон божий\Практика\Проекты\PracticDemoexam\Resources\Намордник.png"/>
+        <TextBlock Text="Намордник"/>
     </Grid>
 </Window>

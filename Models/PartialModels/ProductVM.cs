@@ -62,11 +62,11 @@ namespace PracticDemoexam.Models.PartialModels
                 _mainImage.BeginInit();
                 if (string.IsNullOrEmpty(Product.Image) || string.IsNullOrWhiteSpace(Product.Image))
                 {
-                    _mainImage.UriSource = new Uri("\\Resources\\products\\picture.png", UriKind.Relative);
+                    _mainImage.UriSource = new Uri("\\Resources\\products\\picture.png", UriKind.RelativeOrAbsolute);
                 }
                 else
                 {
-                    _mainImage.UriSource = new Uri("\\Resources" + Product.Image, UriKind.Relative);
+                    _mainImage.UriSource = new Uri(Environment.CurrentDirectory + "\\Resources" + Product.Image, UriKind.Absolute);
                 }
                 _mainImage.EndInit();
                 return _mainImage;

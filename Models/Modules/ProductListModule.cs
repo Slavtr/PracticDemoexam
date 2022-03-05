@@ -306,7 +306,14 @@ namespace PracticDemoexam.Models.Modules
         {
             get
             {
-                return PoginationPages.First(x => x.Key == _currentPage).Value;
+                if (_currentPage != 0)
+                {
+                    return PoginationPages.First(x => x.Key == _currentPage).Value;
+                }
+                else
+                {
+                    return PoginationPages.First().Value;
+                }
             }
             set
             {
@@ -355,7 +362,7 @@ namespace PracticDemoexam.Models.Modules
         private readonly ObservableCollection<ProductVM> UnchangedProducts = new ObservableCollection<ProductVM>();
 
         private int _countPages;
-        private int _currentPage;
+        private int _currentPage = 1;
         public string CurrentPage
         {
             get
@@ -367,10 +374,11 @@ namespace PracticDemoexam.Models.Modules
                 _currentPage = Convert.ToInt32(value);
                 OnPropertyChanged("Products");
                 OnPropertyChanged("CurrentPage");
+                OnPropertyChanged("Pages");
             }
         }
 
-        public List<string> Pages { get; set; } = new List<string>();
+        public ObservableCollection<string> Pages { get; set; } = new ObservableCollection<string>();
 
         public RoutedCommand PageRightCommand { get; private set; }
         public CommandBinding PageRightCommandBinding { get; private set; }
@@ -458,7 +466,7 @@ namespace PracticDemoexam.Models.Modules
             {
                 if (SelectedItems.Count > 1 && SelectedItems.Count != 0)
                 {
-                    return null;
+                    return SelectedItems.Last();
                 }
                 else
                 {
@@ -470,7 +478,14 @@ namespace PracticDemoexam.Models.Modules
         {
             get
             {
-                return SelectedItem.Product.ArticleNumber;
+                if (string.IsNullOrEmpty(SelectedItem.Product.ArticleNumber) || string.IsNullOrWhiteSpace(SelectedItem.Product.ArticleNumber))
+                {
+                    return "Артикул";
+                }
+                else
+                {
+                    return SelectedItem.Product.ArticleNumber;
+                }
             }
             set
             {
@@ -562,7 +577,7 @@ namespace PracticDemoexam.Models.Modules
             }
         }
 
-        public bool WayOfChangeCost { get; set; }
+        public bool WayOfChangeCost { get; set; } = true;
         public string CostChangeNumber
         {
             get;
@@ -602,7 +617,7 @@ namespace PracticDemoexam.Models.Modules
         {
             var product = new ProductVM();
             product.IsSelected = true;
-            foreach (ProductVM pvm in SelectedItems)
+            foreach (ProductVM pvm in UnchangedProducts)
             {
                 pvm.IsSelected = false;
             }
@@ -707,10 +722,10 @@ namespace PracticDemoexam.Models.Modules
             if (result == true)
             {
                 string name = dlg.FileName.Split('\\').Last();
-                string newName = "../../Resources/products/" + name;
+                string newName = "Resources/products/" + name;
                 File.Copy(dlg.FileName, newName, true);
 
-                SelectedItem.MainImage = new BitmapImage(new Uri(newName.Replace("../../Resources", "").Replace("/", "\\"), UriKind.Relative));
+                SelectedItem.MainImage = new BitmapImage(new Uri(newName.Replace("Resources", "").Replace("/", "\\"), UriKind.Relative));
                 OnPropertyChanged("Products");
             }
         }

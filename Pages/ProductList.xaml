@@ -67,13 +67,14 @@
                 <ContextMenu>
                     <MenuItem Header="Редактировать" Command="{Binding Path=ItemRedactCommand}"/>
                     <MenuItem Header="Изменить цену на ..." Command="{Binding Path=ChangeManyCostsCommand}"/>
-                    <MenuItem Header="Добавить" Command="{Binding Path=AddProductCommand}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
         <StackPanel Grid.Row="2" Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
             <Button Content="&lt;" Command="{Binding Path=ProductListModule.PageLeftCommand}"/>
-            <ListBox  DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" ItemsSource="{Binding Path=Pages, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" SelectedItem="{Binding Path=CurrentPage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
+            <ListBox  DataContext="{Binding Path=ProductListModule, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                      ItemsSource="{Binding Path=Pages, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}" 
+                      SelectedItem="{Binding Path=CurrentPage, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal"/>
@@ -82,5 +83,6 @@
             </ListBox>
             <Button Content=">" Command="{Binding Path=ProductListModule.PageRightCommand}"/>
         </StackPanel>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding Path=ProductListModule.AddProductCommand}" Content="Добавить элемент"/>
     </Grid>
 </Page>
